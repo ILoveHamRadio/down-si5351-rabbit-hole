@@ -18,12 +18,12 @@ void setup() {
   delay(2000);
   display.clearDisplay();
 
-  display.setTextSize(1);
+  display.setTextSize(3);
   display.setTextColor(WHITE);
   display.setCursor(0, 10);
   // Display static text
-  display.println("Welcome to");
-  display.println("Down the SI5351");
+  //display.println("Welcome to");
+  //display.println("Down the SI5351");
   display.println("Rabbit Hole");
   display.display(); 
 }

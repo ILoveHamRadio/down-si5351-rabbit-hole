@@ -5,6 +5,8 @@
 // global definitions
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
+
+// Defines for Frequency Display
 #define FREQUENCY_DIVISOR_HZ 100
 #define FREQUENCY_DIVISOR_KHZ 100000
 #define FREQUENCY_DIVISOR_MHZ 100000000
@@ -14,10 +16,12 @@
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 const int bandswitch[] = { 160,80,40,20,15,10 };
+const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 const uint64_t freqswitch_low[] = { 180000000, 350000000, 700000000, 1400000000, 2100000000, 2800000000 };
 const uint64_t freqswitch_high[] = { 188000000, 380000000, 720000000, 1435000000, 2145000000, 290000000 };
 
 int current_band = 5;
+int current_mode = 4;
 uint64_t  current_freq[] = { 180000000,350000000,700000000,1400000000,2100000000,2800000000 };
 uint64_t target_freq;
 uint64_t frequency_step = 100;
@@ -26,7 +30,8 @@ uint64_t frequency_step = 100;
 void clearDisplay();
 void showDisplay();
 void displayFrequency(uint64_t frequency);
-void diplayBand();
+void displayBand();
+void displayMode();
 
 void setup() {
   Serial.begin(115200);
@@ -42,7 +47,8 @@ void setup() {
 void loop() {
   clearDisplay();
   displayFrequency(target_freq);
-  diplayBand();
+  displayBand();
+  displayMode();
   showDisplay();
   delay(10000);
 }
@@ -88,8 +94,14 @@ void displayFrequency(uint64_t frequency){
   display.printf(buffer);
 }
 
-void diplayBand(){
+void displayBand(){
   display.setCursor(0, 28);
   display.setTextSize(1);
   display.printf("Band: %d meters",  bandswitch[current_band]);
+}
+
+void displayMode(){
+  display.setCursor(0, 38);
+  display.setTextSize(1);
+  display.printf("Mode: %s",  modes[current_mode]);
 }
