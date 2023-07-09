@@ -20,7 +20,7 @@ const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 const uint64_t freqswitch_low[] = { 180000000, 350000000, 700000000, 1400000000, 2100000000, 2800000000 };
 const uint64_t freqswitch_high[] = { 188000000, 380000000, 720000000, 1435000000, 2145000000, 290000000 };
 
-int current_band = 5;
+int current_band = 3;
 int current_mode = 4;
 uint64_t  current_freq[] = { 180000000,350000000,700000000,1400000000,2100000000,2800000000 };
 uint64_t target_freq;
