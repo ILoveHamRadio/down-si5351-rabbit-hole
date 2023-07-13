@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "OLED-Hello-World"
+		},
+		{
+			"name": "OLED-Frequency-Display",
+			"path": "OLED-Frequency-Display"
+		},
+		{
+			"path": "SI5351-Calibration"
+		},
+		{
+			"name": "Encoder",
+			"path": "Encoder"
+		},
+		{
+			"name": "Encoder-VFO",
+			"path": "Encoder-VFO"
+		},
+		{
+			"name": "SI5351-VFO",
+			"path": "SI5351-VFO"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"string": "cpp"
+		}
+	}
+}
