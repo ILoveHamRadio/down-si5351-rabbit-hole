@@ -15,8 +15,8 @@ int32_t cal_factor = 10000;
 
 // Defines for Frequency Display
 #define FREQUENCY_DIVISOR_HZ 1
-#define FREQUENCY_DIVISOR_KHZ 1000
-#define FREQUENCY_DIVISOR_MHZ 1000000
+#define FREQUENCY_DIVISOR_KHZ 10
+#define FREQUENCY_DIVISOR_MHZ 10000
 
 // global variables
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
@@ -56,14 +56,14 @@ VCC                    any microcontroler output pin - but set also ROTARY_ENCOD
 
 const int bandswitch[] = {160, 80, 40, 20, 15, 10};
 const int bandswitch_max = 5;
-const long freqswitch_low[] = {1800000, 3500000, 7000000, 14000000, 21000000, 28000000};
-const long freqswitch_high[] = {1880000, 3800000, 7200000, 14350000, 21450000, 29000000};
+const long freqswitch_low[] = {18000, 35000, 70000, 140000, 210000, 280000};
+const long freqswitch_high[] = {18800, 38000, 72000, 143500, 214500, 290000};
 
 const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 int current_mode = 4;
 
 int current_band = 0;
-long current_freq[] = {1800000, 3500000, 7000000, 14000000, 21000000, 28000000};
+long current_freq[] = {18000, 35000, 70000, 140000, 210000, 280000};
 long target_freq;
 
 // instead of changing here, rather change numbers above
@@ -138,7 +138,7 @@ void displayFrequency(uint64_t frequency)
   frequency -= freqKhz * FREQUENCY_DIVISOR_KHZ;
   Serial.printf("frequency %d\n", frequency);
 
-  uint64_t freqHz = frequency / FREQUENCY_DIVISOR_HZ;
+  uint64_t freqHz = frequency * 100;
   char hertz[4];
   sprintf(hertz, "%03d", freqHz);
 
@@ -202,7 +202,7 @@ void setup()
    * For fine tuning slow down.
    */
   rotaryEncoder.disableAcceleration(); // acceleration is now enabled by default - disable if you dont need it
-  rotaryEncoder.setAcceleration(1);    // or set the value - larger number = more accelearation; 0 or 1 means disabled acceleration
+  rotaryEncoder.setAcceleration(250);    // or set the value - larger number = more accelearation; 0 or 1 means disabled acceleration
 
   target_freq = current_freq[current_band];
 
@@ -212,7 +212,7 @@ void setup()
   // Start on target frequency
   si5351.set_correction(cal_factor, SI5351_PLL_INPUT_XO);
   si5351.set_pll(SI5351_PLL_FIXED, SI5351_PLLA);
-  uint64_t si5352_freq = target_freq * 100;
+  uint64_t si5352_freq = target_freq * 10000;
   si5351.set_freq(si5352_freq, SI5351_CLK0);
 }
 
@@ -221,7 +221,7 @@ void loop()
   // in loop call your custom function which will process rotary encoder values
   rotary_loop();
   display_loop();
-  uint64_t si5352_freq = target_freq * 100;
+  uint64_t si5352_freq = target_freq * 10000;
   si5351.set_freq(si5352_freq, SI5351_CLK0);
   delay(50);
 }
