@@ -57,7 +57,7 @@ VCC                    any microcontroler output pin - but set also ROTARY_ENCOD
 const int bandswitch[] = {160, 80, 40, 20, 15, 10};
 const int bandswitch_max = 5;
 const long freqswitch_low[] = {18000, 35000, 70000, 140000, 210000, 280000};
-const long freqswitch_high[] = {18800, 38000, 72000, 143500, 214500, 290000};
+const long freqswitch_high[] = {20000, 40000, 73000, 143500, 214500, 297000};
 
 const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 int current_mode = 4;
@@ -202,7 +202,7 @@ void setup()
    * For fine tuning slow down.
    */
   rotaryEncoder.disableAcceleration(); // acceleration is now enabled by default - disable if you dont need it
-  rotaryEncoder.setAcceleration(250);    // or set the value - larger number = more accelearation; 0 or 1 means disabled acceleration
+  rotaryEncoder.setAcceleration(250);  // or set the value - larger number = more accelearation; 0 or 1 means disabled acceleration
 
   target_freq = current_freq[current_band];
 
