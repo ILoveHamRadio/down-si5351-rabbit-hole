@@ -54,16 +54,16 @@ VCC                    any microcontroler output pin - but set also ROTARY_ENCOD
 // #define ROTARY_ENCODER_STEPS 2
 #define ROTARY_ENCODER_STEPS 4
 
-const int bandswitch[] = {160, 80, 40, 20, 15, 10};
-const int bandswitch_max = 5;
-const long freqswitch_low[] = {18000, 35000, 70000, 140000, 210000, 280000};
-const long freqswitch_high[] = {20000, 40000, 73000, 143500, 214500, 297000};
+const int bandswitch[] = {160, 80, 40, 20, 15, 10, 6};
+const int bandswitch_max = 6;
+const long freqswitch_low[] = {18000, 35000, 70000, 140000, 210000, 280000, 500000};
+const long freqswitch_high[] = {20000, 40000, 73000, 143500, 214500, 297000, 540000};
 
 const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 int current_mode = 4;
 
 int current_band = 0;
-long current_freq[] = {18000, 35000, 70000, 140000, 210000, 280000};
+long current_freq[] = {18000, 35000, 70000, 140000, 210000, 280000, 500000};
 long target_freq;
 
 // instead of changing here, rather change numbers above
