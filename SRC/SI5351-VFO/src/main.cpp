@@ -212,7 +212,7 @@ void setup()
   // Start on target frequency
   si5351.set_correction(cal_factor, SI5351_PLL_INPUT_XO);
   si5351.set_pll(SI5351_PLL_FIXED, SI5351_PLLA);
-  uint64_t si5352_freq = target_freq * 10000;
+  uint64_t si5352_freq = target_freq * 10000ULL;
   si5351.set_freq(si5352_freq, SI5351_CLK0);
 }
 
@@ -221,7 +221,7 @@ void loop()
   // in loop call your custom function which will process rotary encoder values
   rotary_loop();
   display_loop();
-  uint64_t si5352_freq = target_freq * 10000;
+  uint64_t si5352_freq = target_freq * 10000ULL;
   si5351.set_freq(si5352_freq, SI5351_CLK0);
   delay(50);
 }
