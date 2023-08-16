@@ -6,8 +6,8 @@
 #include <Adafruit_SSD1306.h>
 
 Si5351 si5351;
-
-int32_t cal_factor = 10000;
+// calibration factor for si5351 based on the calibration tool
+int32_t cal_factor = 146000;
 
 // global definitions
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -18,12 +18,12 @@ int32_t cal_factor = 10000;
 #define FREQUENCY_DIVISOR_KHZ 10
 #define FREQUENCY_DIVISOR_MHZ 10000
 
-#define PIN_SP 10
-#define PIN_TX 13
+#define PIN_SP 14
+#define PIN_TX 12
 uint16_t duration = 85; // Morse code typing speed in milliseconds - higher number means slower typing
 uint16_t hz = 750;      // Volume up if a high ohm speaker connected to circuit of the morse generator
 
-String cw_message = "VVV de K5VZ  LOCATOR IS EMlb13  PWR IS 10mW  ANT IS 6BVT VERTICAL"; // Your message
+String cw_message = "VVV de K5VZ  LOCATOR IS EM13lb  PWR IS 10mW  ANT IS 6BVT VERTICAL"; // Your message
 
 // global variables
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
@@ -58,8 +58,8 @@ VCC                    any microcontroler output pin - but set also ROTARY_ENCOD
 
 // depending on your encoder - try 1,2 or 4 to get expected behaviour
 #define ROTARY_ENCODER_STEPS 4
-unsigned long shortPressAfterMiliseconds = 50;  // how long short press shoud be. Do not set too low to avoid bouncing (false press events).
-unsigned long longPressAfterMiliseconds = 1000; // how long čong press shoud be.
+unsigned long shortPressAfterMiliseconds = 50;  // how long a short press shoud be. Do not set too low to avoid bouncing (false press events).
+unsigned long longPressAfterMiliseconds = 1000; // how long a long press shoud be.
 
 // instead of changing here, rather change numbers above
 AiEsp32RotaryEncoder rotaryEncoder = AiEsp32RotaryEncoder(ROTARY_ENCODER_A_PIN, ROTARY_ENCODER_B_PIN, ROTARY_ENCODER_BUTTON_PIN, ROTARY_ENCODER_VCC_PIN, ROTARY_ENCODER_STEPS);
@@ -107,7 +107,8 @@ void cw(bool state);
 void setup()
 {
   Serial.begin(115200);
-
+  // set tx led pin mode
+  pinMode(PIN_TX, OUTPUT);
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
   { // Address 0x3D for 128x64
     Serial.println(F("SSD1306 allocation failed"));
@@ -168,10 +169,14 @@ void handle_rotary_button()
   static bool wasButtonDown = false;
 
   bool isEncoderButtonDown = rotaryEncoder.isEncoderButtonDown();
-  // isEncoderButtonDown = !isEncoderButtonDown; //uncomment this line if your button is reversed
+  // isEncoderButtonDown = !isEncoderButtonDown; // uncomment this line if your button is reversed
+
+  Serial.printf("handle rotary button\n");
 
   if (isEncoderButtonDown)
   {
+    Serial.printf("rotary button down\n");
+
     if (!wasButtonDown)
     {
       // start measuring
@@ -195,6 +200,7 @@ void handle_rotary_button()
       on_button_short_click();
     }
   }
+
   wasButtonDown = false;
 }
 
@@ -226,10 +232,10 @@ void rotary_loop()
     target_freq = current_freq[current_band];
   }
 
-  if (rotaryEncoder.isEncoderButtonClicked())
-  {
-    handle_rotary_button();
-  }
+  // if (rotaryEncoder.isEncoderButtonClicked())
+  // {
+  handle_rotary_button();
+  //}
 }
 
 void IRAM_ATTR readEncoderISR()
@@ -251,6 +257,7 @@ void init_si5351()
   si5351.set_pll(SI5351_PLL_FIXED, SI5351_PLLA);
   uint64_t si5352_freq = target_freq * 10000ULL;
   si5351.set_freq(si5352_freq, SI5351_CLK0);
+  si5351.output_enable(SI5351_CLK0, 0);
 }
 
 void set_si5351_freuency(long target_freq)
@@ -278,21 +285,21 @@ void showDisplay()
 
 void displayFrequency(uint64_t frequency)
 {
-  Serial.printf("display frequecy: %d\n", frequency);
+  // Serial.printf("display frequecy: %d\n", frequency);
 
   uint64_t freqMhz = frequency / FREQUENCY_DIVISOR_MHZ;
   char megaHz[4];
   sprintf(megaHz, "%d", freqMhz);
 
   frequency -= freqMhz * FREQUENCY_DIVISOR_MHZ;
-  Serial.printf("%d\n", frequency);
+  // Serial.printf("%d\n", frequency);
 
   uint64_t freqKhz = frequency / FREQUENCY_DIVISOR_KHZ;
   char kiloHz[4];
   sprintf(kiloHz, "%03d", freqKhz);
 
   frequency -= freqKhz * FREQUENCY_DIVISOR_KHZ;
-  Serial.printf("frequency %d\n", frequency);
+  // Serial.printf("frequency %d\n", frequency);
 
   uint64_t freqHz = frequency * 100;
   char hertz[4];
@@ -300,7 +307,7 @@ void displayFrequency(uint64_t frequency)
 
   char buffer[40];
   sprintf(buffer, "%s.%s,%s", megaHz, kiloHz, hertz);
-  Serial.println(buffer);
+  // Serial.println(buffer);
 
   display.setCursor(0, 10);
   display.setTextSize(2);
