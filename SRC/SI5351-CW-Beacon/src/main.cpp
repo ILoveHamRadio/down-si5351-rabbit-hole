@@ -7,7 +7,7 @@
 
 Si5351 si5351;
 // calibration factor for si5351 based on the calibration tool
-int32_t cal_factor = 146000;
+int32_t cal_factor = 148000;
 
 // global definitions
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
