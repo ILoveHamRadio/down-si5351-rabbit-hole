@@ -1,12 +1,14 @@
 #include <WiFi.h>
 #include "time.h"
 
-const char *ssid = "REPLACE_WITH_YOUR_SSID";
-const char *password = "REPLACE_WITH_YOUR_PASSWORD";
+const char *ssid = "OtakuSmokeAndBrew";
+const char *password = "summitdesert823";
 
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
+
+void printLocalTime();
 
 void setup()
 {
