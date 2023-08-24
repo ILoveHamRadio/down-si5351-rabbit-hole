@@ -1,7 +1,20 @@
 #include <SPI.h>
 #include <RTClib.h>
+#include <WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
+// Replace with your network credentials
+const char *ssid = "REPLACE_WITH_YOUR_SSID";
+const char *password = "REPLACE_WITH_YOUR_PASSWORD";
+
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
 
 RTC_DS1307 rtc;
+
+const int gmtOffset = 5;
 
 char daysOfWeek[7][12] = {
     "Sunday",
@@ -25,8 +38,32 @@ void setup()
       ;
   }
 
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  // Print local IP address and start web server
+  Serial.println("");
+  Serial.println("WiFi connected.");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  // Initialize a NTPClient to get time
+  timeClient.begin();
+  // Set offset time in seconds to adjust for your timezone, for example:
+  // GMT +1 = 3600
+  // GMT +8 = 28800
+  // GMT -1 = -3600
+  // GMT 0 = 0
+  timeClient.setTimeOffset(0);
+
   // automatically sets the RTC to the date & time on PC this sketch was compiled
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  timeClient.update();
+  // rtc.adjust(DateTime(timeClient.getEpochTime()));
 
   // manually sets the RTC with an explicit date & time, for example to set
   // January 21, 2021 at 3am you would call:
