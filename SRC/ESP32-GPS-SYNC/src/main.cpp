@@ -54,8 +54,8 @@ VCC                    any microcontroler output pin - but set also ROTARY_ENCOD
 #define ROTARY_ENCODER_B_PIN D5
 #define ROTARY_ENCODER_BUTTON_PIN D7
 #else
-#define ROTARY_ENCODER_A_PIN 5
-#define ROTARY_ENCODER_B_PIN 18
+#define ROTARY_ENCODER_A_PIN 18
+#define ROTARY_ENCODER_B_PIN 5
 #define ROTARY_ENCODER_BUTTON_PIN 19
 #endif
 #define ROTARY_ENCODER_VCC_PIN -1 /* 27 put -1 of Rotary encoder Vcc is connected directly to 3,3V; else you can use declared output pin for powering rotary encoder */
@@ -76,8 +76,8 @@ const long freqswitch_high[] = {20000, 40000, 73000, 143500, 214500, 297000, 540
 const String modes[] = {"USB", "LSB", "CW", "WSPR", "FT8", "FT4"};
 int current_mode = 2;
 
-int current_band = 0;
-long current_freq[] = {18000, 35000, 70000, 140000, 210000, 280000, 500000};
+int current_band = 4;
+long current_freq[] = {18010, 35010, 70010, 140010, 210010, 280010, 500010};
 long target_freq;
 
 /*
@@ -87,6 +87,11 @@ long target_freq;
 */
 static const int RXPin = 17, TXPin = 16;
 static const uint32_t GPSBaud = 9600;
+
+bool gpsLocationValid = false;
+bool gpsDateValid = false;
+bool gpsTimeValid = false;
+String gridSquare = "";
 
 // The TinyGPSPlus object
 TinyGPSPlus gps;
@@ -159,7 +164,10 @@ void setup()
 
   init_rotary_encoder();
   init_si5351();
-  initGPSSync();
+  while (gridSquare == "")
+  {
+    initGPSSync();
+  }
 }
 
 void loop()
@@ -172,11 +180,6 @@ void loop()
 
 #pragma region gps_functions
 
-bool gpsLocationValid = false;
-bool gpsDateValid = false;
-bool gpsTimeValid = false;
-String gridSquare = "";
-
 void initGPSSync()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
@@ -186,7 +189,7 @@ void initGPSSync()
     {
       displayGPSInfo();
     }
-    if (gpsLocationValid && gpsDateValid && gpsTimeValid)
+    if (gpsLocationValid == true && gpsDateValid == true && gpsTimeValid == true)
     {
       return;
     }
@@ -211,10 +214,12 @@ void displayGPSInfo()
     Serial.print(gps.location.lng(), 6);
     Serial.print(F(", Grid Square: "));
     gridSquare = get_mh(gps.location.lat(), gps.location.lng(), 4);
-    Serial.print(gridSquare);
+    Serial.println(gridSquare);
+    Serial.println(F("GridSqure udpaed from GPS"));
   }
   else
   {
+    gpsLocationValid = false;
     Serial.print(F("INVALID"));
   }
 
@@ -230,6 +235,7 @@ void displayGPSInfo()
   }
   else
   {
+    gpsDateValid = false;
     Serial.print(F("INVALID"));
   }
 
@@ -251,16 +257,18 @@ void displayGPSInfo()
     Serial.print(F("."));
     if (gps.time.centisecond() < 10)
       Serial.print(F("0"));
-    Serial.print(gps.time.centisecond());
+    Serial.println(gps.time.centisecond());
   }
   else
   {
+    gpsTimeValid = false;
     Serial.print(F("INVALID"));
   }
 
   if (gpsDateValid && gpsTimeValid)
   {
     rtc.adjust(DateTime(gps.date.year(), gps.date.month(), gps.date.day(), gps.time.hour(), gps.time.minute(), gps.time.second()));
+    Serial.println(F("RTC Updated with GPS Time"));
   }
 
   Serial.println();
@@ -345,12 +353,8 @@ void handle_rotary_button()
   bool isEncoderButtonDown = rotaryEncoder.isEncoderButtonDown();
   // isEncoderButtonDown = !isEncoderButtonDown; // uncomment this line if your button is reversed
 
-  Serial.printf("handle rotary button\n");
-
   if (isEncoderButtonDown)
   {
-    Serial.printf("rotary button down\n");
-
     if (!wasButtonDown)
     {
       // start measuring
@@ -483,21 +487,21 @@ void displayFrequency(uint64_t frequency)
   sprintf(buffer, "%s.%s,%s", megaHz, kiloHz, hertz);
   // Serial.println(buffer);
 
-  display.setCursor(0, 10);
+  display.setCursor(0, 5);
   display.setTextSize(2);
   display.printf(buffer);
 }
 
 void displayBand()
 {
-  display.setCursor(0, 28);
+  display.setCursor(0, 23);
   display.setTextSize(1);
   display.printf("Band: %d meters", bandswitch[current_band]);
 }
 
 void displayMode()
 {
-  display.setCursor(0, 38);
+  display.setCursor(0, 33);
   display.setTextSize(1);
   display.printf("Mode: %s", modes[current_mode]);
 }
@@ -505,14 +509,14 @@ void displayMode()
 void displayTime()
 {
   DateTime now = rtc.now();
-  display.setCursor(0, 48);
+  display.setCursor(0, 43);
   display.setTextSize(1);
-  display.printf("Time: %d:%d:%d", now.hour(), now.minute(), now.second());
+  display.printf("Time: %02d:%02d:%02d", now.hour(), now.minute(), now.second());
 }
 
 void displayGridSquare(String gridSquare)
 {
-  display.setCursor(0, 58);
+  display.setCursor(0, 53);
   display.setTextSize(1);
   display.printf("GRID: %s", gridSquare);
 }
