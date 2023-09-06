@@ -215,7 +215,7 @@ void displayGPSInfo()
     Serial.print(F(", Grid Square: "));
     gridSquare = get_mh(gps.location.lat(), gps.location.lng(), 4);
     Serial.println(gridSquare);
-    Serial.println(F("GridSqure udpaed from GPS"));
+    Serial.println(F("GridSqure updated from GPS"));
   }
   else
   {
@@ -223,7 +223,7 @@ void displayGPSInfo()
     Serial.print(F("INVALID"));
   }
 
-  Serial.print(F("  Date/Time: "));
+  Serial.print(F("Date/Time: "));
   if (gps.date.isValid())
   {
     gpsDateValid = true;
