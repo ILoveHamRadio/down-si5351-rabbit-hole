@@ -121,6 +121,8 @@ void displayBand();
 void displayMode();
 void displayTime();
 void displayGridSquare(String gridSquare);
+void displayInitGPS();
+void display_init_gps();
 void display_loop();
 // cw beacon functions
 void send_cw_message();
@@ -182,6 +184,7 @@ void loop()
 
 void initGPSSync()
 {
+  display_init_gps();
   // This sketch displays information every time a new sentence is correctly encoded.
   while (ss.available() > 0)
   {
@@ -272,7 +275,6 @@ void displayGPSInfo()
   }
 
   Serial.println();
-  display_loop();
 }
 
 char letterize(int x)
@@ -519,6 +521,23 @@ void displayGridSquare(String gridSquare)
   display.setCursor(0, 53);
   display.setTextSize(1);
   display.printf("GRID: %s", gridSquare);
+}
+
+void displayInitGPS()
+{
+  display.setCursor(0, 43);
+  display.setTextSize(1);
+  display.printf("INIT GPS");
+}
+
+void display_init_gps()
+{
+  clearDisplay();
+  displayFrequency(target_freq);
+  displayBand();
+  displayMode();
+  displayInitGPS();
+  showDisplay();
 }
 
 void display_loop()
