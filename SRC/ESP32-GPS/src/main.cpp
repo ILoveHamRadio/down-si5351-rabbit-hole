@@ -3,7 +3,7 @@
 /*
    This sample sketch demonstrates the normal use of a TinyGPSPlus (TinyGPSPlus) object.
    It requires the use of SoftwareSerial, and assumes that you have a
-   4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).
+   9600-baud serial GPS device hooked up on pins 17(rx) and 16(tx).
 */
 static const int RXPin = 17, TXPin = 16;
 static const uint32_t GPSBaud = 9600;
@@ -20,13 +20,6 @@ void setup()
 {
   Serial.begin(115200);
   ss.begin(GPSBaud);
-
-  Serial.println(F("DeviceExample.ino"));
-  Serial.println(F("A simple demonstration of TinyGPSPlus with an attached GPS module"));
-  Serial.print(F("Testing TinyGPSPlus library v. "));
-  Serial.println(TinyGPSPlus::libraryVersion());
-  Serial.println(F("by Mikal Hart"));
-  Serial.println();
 }
 
 void loop()

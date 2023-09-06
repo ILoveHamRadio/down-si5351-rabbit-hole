@@ -21,13 +21,6 @@ void setup()
 {
   Serial.begin(115200);
   ss.begin(GPSBaud);
-
-  Serial.println(F("DeviceExample.ino"));
-  Serial.println(F("A simple demonstration of TinyGPSPlus with an attached GPS module"));
-  Serial.print(F("Testing TinyGPSPlus library v. "));
-  Serial.println(TinyGPSPlus::libraryVersion());
-  Serial.println(F("by Mikal Hart"));
-  Serial.println();
 }
 
 void loop()
