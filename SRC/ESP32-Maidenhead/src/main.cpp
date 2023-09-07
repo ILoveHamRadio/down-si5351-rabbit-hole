@@ -93,6 +93,9 @@ void displayInfo()
   }
 
   Serial.println();
+  Serial.print(F("Satellites: "));
+  Serial.println(gps.satellites.value());
+  Serial.println();
 }
 
 char letterize(int x)
