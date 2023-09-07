@@ -26,8 +26,12 @@ void loop()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
   while (ss.available() > 0)
+  {
     if (gps.encode(ss.read()))
+    {
       displayInfo();
+    }
+  }
 
   if (millis() > 5000 && gps.charsProcessed() < 10)
   {
@@ -89,5 +93,8 @@ void displayInfo()
     Serial.print(F("INVALID"));
   }
 
+  Serial.println();
+  Serial.print(F("Satellites: "));
+  Serial.println(gps.satellites.value());
   Serial.println();
 }
