@@ -90,7 +90,7 @@ DateTime dt;
 uint8_t tx_buffer[WSPR_SYMBOL_COUNT];
 char call[] = "K5VZ"; // change to your callsign
 char loc[] = "EM13";
-uint8_t dbm = 27;
+uint8_t dbm = 3;
 
 // predefined function prototypes
 // rotary encoder functions
@@ -219,7 +219,7 @@ void displayGPSInfo()
   else
   {
     gpsLocationValid = false;
-    Serial.print(F("INVALID"));
+    Serial.print(F("INVALID "));
   }
 
   Serial.print(F("Date/Time: "));
@@ -235,7 +235,7 @@ void displayGPSInfo()
   else
   {
     gpsDateValid = false;
-    Serial.print(F("INVALID"));
+    Serial.print(F("INVALID "));
   }
 
   Serial.print(F(" "));
@@ -602,7 +602,6 @@ void jtTransmitMessage()
 
   for (i = 0; i < WSPR_SYMBOL_COUNT; i++)
   {
-    Serial.printf("%2d,", tx_buffer[i]);
     // Thanks to https://github.com/W3PM/Auto-Calibrated-GPS-RTC-Si5351A-FST4W-and-WSPR-MEPT/blob/main/w3pm_GPS_FST4W_WSPR_V1_1a.ino
     unsigned long timer = millis();
     si5351.set_freq((target_freq * freqMultiplier) + (tx_buffer[i] * WSPR_TONE_SPACING), SI5351_CLK0);
